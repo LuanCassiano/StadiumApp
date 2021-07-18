@@ -1,0 +1,14 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.formatOnSave": true,
+    "editor.fontFamily": "Fira Code Retina",
+    "editor.fontLigatures": true,
+    "editor.fontWeight": "500",
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "explorer.compactFolders": false
+}
