@@ -27,8 +27,6 @@ const Home: React.FC = () => {
         (state: RootState) => state.standings,
     );
 
-    console.tron.log('data', data);
-
     const [standings, setStandings] = useState<any[]>([]);
 
     const {
