@@ -12,7 +12,7 @@ import App from './App';
 const Root: React.FC = () => {
     return (
         <Provider store={store}>
-            <StatusBar barStyle="light-content" backgroundColor="#151a25" />
+            <StatusBar barStyle="light-content" backgroundColor="#191919" />
             <App />
         </Provider>
     );

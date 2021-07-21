@@ -19,7 +19,7 @@ export const Card = styled.TouchableOpacity`
     justify-content: center;
     border-radius: 20px;
     elevation: 5;
-    background-color: #151a25;
+    background-color: #2d2d2d;
 `;
 
 export const CardMedia = styled.Image`

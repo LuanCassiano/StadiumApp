@@ -1,8 +1,4 @@
-interface ISeason {
-    year: number;
-    start: string;
-    end: string;
-}
+import { ISeason } from './ISeason';
 
 export interface ILeague {
     league: {

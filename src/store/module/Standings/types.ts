@@ -1,0 +1,4 @@
+export enum StandingsTypes {
+    GET_STANDINGS_REQUEST = 'league/GET_STANDINGS_REQUEST',
+    GET_STANDINGS_SUCCESS = 'league/GET_STANDINGS_SUCCESS',
+}

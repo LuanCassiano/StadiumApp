@@ -2,12 +2,7 @@ import React, { memo } from 'react';
 
 import * as Styled from './styles';
 
-import { ILeague } from '../../../interfaces/ILeague';
-
-interface IListLeague {
-    item: ILeague;
-    onItemClick(item: ILeague): void;
-}
+import { IListLeague } from './interfaces/IListLeagues';
 
 const ListLeagues: React.FC<IListLeague> = ({
     item,

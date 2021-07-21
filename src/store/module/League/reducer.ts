@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import { LeagueTypes } from './types';
 import { ILeagueState } from './state';
-import { IActionsLeague } from './interfaces/IActionLeagueRequest';
+import { IActionsLeague } from './interfaces/IActionLeague';
 
 const INITIAL_STATE: ILeagueState = {
     data: [],

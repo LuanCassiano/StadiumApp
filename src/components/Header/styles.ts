@@ -3,9 +3,8 @@ import { ColorPallete } from '../../global/Colors';
 import { FontFamily } from '../../global/FontFamily';
 
 export const Container = styled.View`
-    padding: 30px 20px;
-    background-color: #1c2331;
-    elevation: 5;
+    padding: 20px 20px;
+    background-color: #1f1f1f;
 `;
 
 export const Content = styled.View`
