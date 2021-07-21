@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { RouteProp } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/Home';
@@ -7,13 +7,9 @@ import LeagueScreen from '../screens/League';
 
 const Stack = createStackNavigator();
 
-function OnBoardingNavigator() {
-    return (
-        <Stack.Navigator headerMode="none" initialRouteName="league">
-            <Stack.Screen name="league" component={LeagueScreen} />
-        </Stack.Navigator>
-    );
-}
+type RootStackParamsList = {
+    home: { idLeague: number; season: number };
+};
 
 function HomeNavigator() {
     return (
@@ -26,8 +22,13 @@ function HomeNavigator() {
 export default function RootNavigator() {
     return (
         <Stack.Navigator headerMode="none" initialRouteName="onBoarding">
-            <Stack.Screen name="onBoarding" component={OnBoardingNavigator} />
+            <Stack.Screen name="onBoarding" component={LeagueScreen} />
             <Stack.Screen name="home" component={HomeNavigator} />
         </Stack.Navigator>
     );
 }
+
+export declare type RootNavigationProps = RouteProp<
+    RootStackParamsList,
+    'home'
+>;
