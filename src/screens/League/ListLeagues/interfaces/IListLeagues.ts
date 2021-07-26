@@ -1,6 +1,6 @@
-import { ILeague } from '../../../../interfaces/ILeague';
+import { ILeague, ILeagueData } from '../../../../interfaces/ILeague';
 
 export interface IListLeague {
-    item: ILeague;
-    onItemClick(item: ILeague): void;
+    item: ILeagueData;
+    onItemClick(item: ILeagueData): void;
 }

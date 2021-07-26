@@ -1,6 +1,6 @@
-import { ILeague } from '../../../interfaces/ILeague';
+import { ILeague, ILeagueData } from '../../../interfaces/ILeague';
 
 export interface ILeagueState {
-    readonly data: ILeague[];
+    readonly data: ILeagueData[];
     readonly loading: boolean;
 }

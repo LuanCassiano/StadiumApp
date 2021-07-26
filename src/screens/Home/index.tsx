@@ -1,272 +1,84 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Image,
-    TouchableOpacity,
-    ActivityIndicator,
-} from 'react-native';
+import { ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { RootNavigationProps } from '../../routes';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-// import { Container } from './styles';
+import Header from '../../components/Header';
+import Loading from '../../components/Loading';
+import MainChampionships from './MainChampionships';
+import ParticipatingTeams from './ParticipatingTeams';
+
+import * as Styled from './styles';
 
 import * as StandingsActions from '../../store/module/Standings/actions';
+
 import { RootState } from '../../store/module/rootReducer';
-import { IStandings } from '../../interfaces/IStandings';
-import { ColorPallete } from '../../global/Colors';
-import Header from '../../components/Header';
-import { FontFamily } from '../../global/FontFamily';
+
+import { RootNavigationProps } from '../../routes';
+
+import { ILeague } from '../../interfaces/ILeague';
+import { IChampionship } from '../../interfaces/IChampionship';
 
 const Home: React.FC = () => {
+    const navigation = useNavigation();
+
     const dispatch = useDispatch();
 
-    const { data, loading } = useSelector(
+    const { data, loading, teamsLeague } = useSelector(
         (state: RootState) => state.standings,
     );
 
-    const [standings, setStandings] = useState<any[]>([]);
+    const [leagueData, setLeagueData] = useState<ILeague>({
+        id: 0,
+        logo: '',
+        name: '',
+        type: '',
+    });
 
     const {
         params: { idLeague, season },
     } = useRoute<RootNavigationProps>();
 
+    const onNavigate = (idTeam: number) => {
+        navigation.navigate('teamInfo', {
+            screen: 'team',
+            params: {
+                idTeam,
+            },
+        });
+    };
+
+    const onSelectedMainChampionship = (item: IChampionship) => {
+        dispatch(StandingsActions.getStandingsRequest(item.id, season));
+    };
+
     const getStandings = () => {
         dispatch(StandingsActions.getStandingsRequest(idLeague, season));
     };
 
-    const _renderGroupInfo = (item: IStandings) => {
+    const _renderSectionChampionshipInfo = () => {
         return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 5,
-                    flex: 1,
-                    paddingVertical: 10,
-                }}
-            >
-                <TouchableOpacity
-                    onPress={(): void => console.tron.log('item', item.team.id)}
-                    style={{
-                        width: '50%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Image
-                        source={{ uri: item.team.logo }}
-                        style={{ width: 30, height: 30, marginRight: 10 }}
-                        resizeMode="contain"
-                    />
+            <Styled.Content>
+                <Styled.Row>
+                    <Styled.SectionCurrentChampionshipContent>
+                        {leagueData.logo !== '' && (
+                            <Styled.LogoChampionship
+                                source={{ uri: leagueData.logo }}
+                                resizeMode="contain"
+                            />
+                        )}
+                        <Styled.TitleChampionship>
+                            {leagueData.name}
+                        </Styled.TitleChampionship>
+                    </Styled.SectionCurrentChampionshipContent>
 
-                    <View style={{ width: 0, flexGrow: 1 }}>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.BLACK,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.team.name}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        width: '50%',
-                    }}
-                >
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
+                    <Styled.ButtonSeeTable
+                        onPress={(): void => navigation.navigate('standing')}
                     >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.points}
-                        </Text>
-                    </View>
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.played}
-                        </Text>
-                    </View>
-
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.win}
-                        </Text>
-                    </View>
-
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.lose}
-                        </Text>
-                    </View>
-                </View>
-            </View>
-        );
-    };
-
-    const _renderGroups = (item: any) => {
-        return (
-            <View
-                style={{
-                    marginBottom: 20,
-                    backgroundColor: '#2d2d2d',
-                    padding: 20,
-                    borderRadius: 15,
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        marginBottom: 10,
-                        marginTop: 5,
-                    }}
-                >
-                    <View style={{ width: '50%' }}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                fontFamily: FontFamily.BOLD,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            Time
-                        </Text>
-                    </View>
-
-                    <View
-                        style={{
-                            width: '50%',
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                P
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                J
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                V
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                D
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-                <FlatList
-                    data={item}
-                    renderItem={({ item }) => _renderGroupInfo(item)}
-                    keyExtractor={(item, index) => String(index)}
-                    showsVerticalScrollIndicator={false}
-                />
-            </View>
+                        <Styled.ButtonText>Ver tabela</Styled.ButtonText>
+                    </Styled.ButtonSeeTable>
+                </Styled.Row>
+            </Styled.Content>
         );
     };
 
@@ -276,39 +88,75 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         if (data && data.length > 0) {
-            setStandings(data[0].league.standings);
+            setLeagueData({
+                id: data[0].league.id,
+                logo: data[0].league.logo,
+                name: data[0].league.name,
+                type: '',
+            });
         }
     }, [data]);
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#1f1f1f' }}>
+        <Styled.Container>
             <Header title="Home" />
 
             {loading ? (
-                <View
-                    style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <ActivityIndicator
-                        size="large"
-                        color={ColorPallete.SECONDARY}
-                    />
-                </View>
+                <Loading />
             ) : (
-                <View style={{ padding: 20 }}>
-                    <FlatList
-                        data={standings}
-                        renderItem={({ item }) => _renderGroups(item)}
-                        keyExtractor={(item, index) => String(index)}
-                        contentContainerStyle={{ paddingBottom: 70 }}
-                        showsVerticalScrollIndicator={false}
+                <ScrollView>
+                    <MainChampionships
+                        onItemClicked={onSelectedMainChampionship}
                     />
-                </View>
+
+                    {_renderSectionChampionshipInfo()}
+
+                    <ParticipatingTeams
+                        teamsLeague={teamsLeague}
+                        onItemPress={onNavigate}
+                    />
+                </ScrollView>
             )}
-        </View>
+
+            {/* {loading ? (
+                <Loading />
+            ) : (
+                <>
+                    <View
+                        style={{
+                            marginBottom: 20,
+                            backgroundColor: '#131313',
+                            padding: 20,
+                            marginLeft: 20,
+                            borderTopLeftRadius: 20,
+                            borderBottomLeftRadius: 20,
+                        }}
+                    >
+                        <Text>Principais campeonatos</Text>
+                        <FlatList
+                            data={mainChampionships}
+                            keyExtractor={item => String(item.id)}
+                            renderItem={({ item }) =>
+                                _renderChampionships(item)
+                            }
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+                    <Styled.Content>
+                        <FlatList
+                            data={standings}
+                            renderItem={({ item }) => (
+                                <ListGroups item={item} />
+                            )}
+                            keyExtractor={(_, index) => String(index)}
+                            contentContainerStyle={{ paddingBottom: 70 }}
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </Styled.Content>
+                </>
+            )} */}
+        </Styled.Container>
     );
 };
 

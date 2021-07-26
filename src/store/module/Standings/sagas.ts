@@ -8,7 +8,9 @@ import { ILeagueStandings } from '../../../interfaces/IStandings';
 import api from '../../../services/api';
 
 import { StandingsTypes } from './types';
-import { getStandingsSuccess } from './actions';
+import { getStandingsSuccess, getTeamsLeagueSuccess } from './actions';
+
+import { getTeamsParticipating } from '../../../utils/ParticipatingTeams';
 
 export function* getStandings({ payload: { league, season } }: AnyAction) {
     try {
@@ -20,9 +22,12 @@ export function* getStandings({ payload: { league, season } }: AnyAction) {
                 },
             });
 
-        // console.tron.log('response', response.data.response);
+        const result = getTeamsParticipating(response.data.response[0].league);
+
+        result.sort((a, b) => a.name.localeCompare(b.name));
 
         yield put(getStandingsSuccess(response.data.response));
+        yield put(getTeamsLeagueSuccess(result));
     } catch (error) {
         console.tron.log('error', Object.keys(error));
     }
