@@ -9,7 +9,7 @@ import ListLeagues from './ListLeagues';
 import ListSeasons from './ListSeasons';
 import Header from '../../components/Header';
 
-import { ILeague } from '../../interfaces/ILeague';
+import { ILeagueData } from '../../interfaces/ILeague';
 import { ISeason } from '../../interfaces/ISeason';
 
 import IconLeft from '../../assets/icons/arrow-left.png';
@@ -46,7 +46,7 @@ const League: React.FC = () => {
         setSeasons(sortedArr);
     };
 
-    const onSelectLeague = useCallback((item: ILeague) => {
+    const onSelectLeague = useCallback((item: ILeagueData) => {
         const { id } = item.league;
         const { seasons } = item;
 

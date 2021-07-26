@@ -1,5 +1,6 @@
 import { Action } from 'redux';
-import { ILeague } from '../../../../interfaces/ILeague';
+import { ILeague, ILeagueData } from '../../../../interfaces/ILeague';
+
 import { LeagueTypes } from '../types';
 
 export interface IActionLeaguesRequest extends Action {
@@ -8,7 +9,7 @@ export interface IActionLeaguesRequest extends Action {
 
 export interface IActionLeaguesSuccess extends Action {
     type: LeagueTypes.GET_LEAGUES_SUCCESS;
-    payload: ILeague[];
+    payload: ILeagueData[];
 }
 
 export type IActionsLeague = IActionLeaguesRequest | IActionLeaguesSuccess;

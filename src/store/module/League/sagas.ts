@@ -3,7 +3,7 @@ import { call, put, all, takeLatest } from 'redux-saga/effects';
 import { AxiosResponse } from 'axios';
 
 import { IApiResponse } from '../../../interfaces/IApiResponse';
-import { ILeague } from '../../../interfaces/ILeague';
+import { ILeague, ILeagueData } from '../../../interfaces/ILeague';
 
 import api from '../../../services/api';
 
@@ -14,7 +14,7 @@ import { paginate } from '../../../utils/Pagination';
 
 export function* getLeagues({ payload: { page, perPage } }: AnyAction) {
     try {
-        const response: AxiosResponse<IApiResponse<ILeague[]>> = yield call(
+        const response: AxiosResponse<IApiResponse<ILeagueData[]>> = yield call(
             api.get,
             '/leagues',
         );
