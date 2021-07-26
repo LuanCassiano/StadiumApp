@@ -16,6 +16,20 @@ export function getStandingsSuccess(data: ILeagueStandings[]) {
     };
 }
 
+export function getParticipatingTeamsRequest(league: number, season: number) {
+    return {
+        type: StandingsTypes.GET_PARTICIPATING_TEAMS_REQUEST,
+        payload: { league, season },
+    };
+}
+
+export function getParticipatingTeamsSuccess(data: ILeagueStandings[]) {
+    return {
+        type: StandingsTypes.GET_PARTICIPATING_TEAMS_SUCCESS,
+        payload: data,
+    };
+}
+
 export function getTeamsLeagueSuccess(data: ITeam[]) {
     return {
         type: StandingsTypes.GET_TEAMS_LEAGUE_SUCESS,

@@ -13,8 +13,11 @@ const ListGroups: React.FC<IListGroups> = ({ item }: IListGroups) => {
     const navigation = useNavigation();
 
     const onItemSelected = ({ team }: IStandings) => {
-        navigation.navigate('team', {
-            idTeam: team.id,
+        navigation.navigate('teamInfo', {
+            screen: 'team',
+            params: {
+                idTeam: team.id,
+            },
         });
     };
 
@@ -51,7 +54,7 @@ const ListGroups: React.FC<IListGroups> = ({ item }: IListGroups) => {
                         onTeamSelected={onItemSelected}
                     />
                 )}
-                keyExtractor={(item, index) => String(index)}
+                keyExtractor={(_, index) => String(index)}
                 showsVerticalScrollIndicator={false}
             />
         </Styled.ListContainer>

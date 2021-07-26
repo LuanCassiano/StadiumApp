@@ -15,3 +15,17 @@ export function getLeaguesSuccess(data: ILeagueData[]) {
         payload: data,
     };
 }
+
+export function getLeagueByIdRequest(id: number) {
+    return {
+        type: LeagueTypes.GET_LEAGUE_BY_ID_REQUEST,
+        payload: id,
+    };
+}
+
+export function getLeagueByIdSuccess(data: ILeague) {
+    return {
+        type: LeagueTypes.GET_LEAGUE_BY_ID_SUCCESS,
+        payload: data,
+    };
+}
