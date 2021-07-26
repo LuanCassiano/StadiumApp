@@ -1,11 +1,11 @@
 import { ISeason } from './ISeason';
+import { League } from './League';
 
-export interface ILeague {
-    league: {
-        id: number;
-        name: string;
-        type: string;
-        logo: string;
-    };
+export interface ILeague extends League {
+    type: string;
+}
+
+export interface ILeagueData {
+    league: ILeague;
     seasons: ISeason[];
 }

@@ -1,314 +1,130 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Image,
-    TouchableOpacity,
-    ActivityIndicator,
-} from 'react-native';
+import { ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
+
+import Header from '../../components/Header';
+import Loading from '../../components/Loading';
+import MainChampionships from './MainChampionships';
+import ParticipatingTeams from './ParticipatingTeams';
+
+import * as Styled from './styles';
+
+import * as LeagueActions from '../../store/module/League/actions';
+import * as StandingsActions from '../../store/module/Standings/actions';
+
+import { RootState } from '../../store/module/rootReducer';
+
 import { RootNavigationProps } from '../../routes';
 
-// import { Container } from './styles';
-
-import * as StandingsActions from '../../store/module/Standings/actions';
-import { RootState } from '../../store/module/rootReducer';
-import { IStandings } from '../../interfaces/IStandings';
-import { ColorPallete } from '../../global/Colors';
-import Header from '../../components/Header';
-import { FontFamily } from '../../global/FontFamily';
+import { IChampionship } from '../../interfaces/IChampionship';
 
 const Home: React.FC = () => {
+    const navigation = useNavigation();
+
     const dispatch = useDispatch();
 
-    const { data, loading } = useSelector(
+    const { loading, teamsLeague } = useSelector(
         (state: RootState) => state.standings,
     );
 
-    const [standings, setStandings] = useState<any[]>([]);
+    const { league } = useSelector((state: RootState) => state.league);
+
+    const [leagueId, setLeagueId] = useState(0);
 
     const {
         params: { idLeague, season },
     } = useRoute<RootNavigationProps>();
 
-    const getStandings = () => {
-        dispatch(StandingsActions.getStandingsRequest(idLeague, season));
+    const onNavigate = (idTeam: number) => {
+        navigation.navigate('teamInfo', {
+            screen: 'team',
+            params: {
+                idTeam,
+            },
+        });
     };
 
-    const _renderGroupInfo = (item: IStandings) => {
-        return (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 5,
-                    flex: 1,
-                    paddingVertical: 10,
-                }}
-            >
-                <TouchableOpacity
-                    onPress={(): void => console.tron.log('item', item.team.id)}
-                    style={{
-                        width: '50%',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Image
-                        source={{ uri: item.team.logo }}
-                        style={{ width: 30, height: 30, marginRight: 10 }}
-                        resizeMode="contain"
-                    />
+    const getLeagueInfo = (id?: number) => {
+        if (id) {
+            dispatch(LeagueActions.getLeagueByIdRequest(id));
+            setLeagueId(id);
+            return;
+        }
 
-                    <View style={{ width: 0, flexGrow: 1 }}>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.BLACK,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.team.name}
-                        </Text>
-                    </View>
-                </TouchableOpacity>
+        dispatch(LeagueActions.getLeagueByIdRequest(idLeague));
+    };
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        width: '50%',
-                    }}
-                >
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.points}
-                        </Text>
-                    </View>
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.played}
-                        </Text>
-                    </View>
+    const onSelectedMainChampionship = (item: IChampionship) => {
+        dispatch(
+            StandingsActions.getParticipatingTeamsRequest(item.id, season),
+        );
+        getLeagueInfo(item.id);
+    };
 
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.win}
-                        </Text>
-                    </View>
-
-                    <View
-                        style={{
-                            width: '25%',
-                            alignItems: 'flex-end',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontFamily: FontFamily.REGULAR,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            {item.all.lose}
-                        </Text>
-                    </View>
-                </View>
-            </View>
+    const getStandings = () => {
+        dispatch(
+            StandingsActions.getParticipatingTeamsRequest(idLeague, season),
         );
     };
 
-    const _renderGroups = (item: any) => {
+    const _renderSectionChampionshipInfo = () => {
         return (
-            <View
-                style={{
-                    marginBottom: 20,
-                    backgroundColor: '#2d2d2d',
-                    padding: 20,
-                    borderRadius: 15,
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        marginBottom: 10,
-                        marginTop: 5,
-                    }}
-                >
-                    <View style={{ width: '50%' }}>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                fontFamily: FontFamily.BOLD,
-                                color: ColorPallete.WHITE,
-                            }}
-                        >
-                            Time
-                        </Text>
-                    </View>
+            <Styled.Content>
+                <Styled.Row>
+                    <Styled.SectionCurrentChampionshipContent>
+                        {league.logo !== '' && (
+                            <Styled.LogoChampionship
+                                source={{ uri: league.logo }}
+                                resizeMode="contain"
+                            />
+                        )}
+                        <Styled.TitleChampionship>
+                            {league.name}
+                        </Styled.TitleChampionship>
+                    </Styled.SectionCurrentChampionshipContent>
 
-                    <View
-                        style={{
-                            width: '50%',
-                            flexDirection: 'row',
-                        }}
+                    <Styled.ButtonSeeTable
+                        onPress={(): void =>
+                            navigation.navigate('standing', {
+                                idLeague: leagueId !== 0 ? leagueId : idLeague,
+                                season,
+                            })
+                        }
                     >
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                P
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                J
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                V
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                width: '25%',
-                                alignItems: 'flex-end',
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: FontFamily.BOLD,
-                                    color: ColorPallete.WHITE,
-                                }}
-                            >
-                                D
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-                <FlatList
-                    data={item}
-                    renderItem={({ item }) => _renderGroupInfo(item)}
-                    keyExtractor={(item, index) => String(index)}
-                    showsVerticalScrollIndicator={false}
-                />
-            </View>
+                        <Styled.ButtonText>Ver tabela</Styled.ButtonText>
+                    </Styled.ButtonSeeTable>
+                </Styled.Row>
+            </Styled.Content>
         );
     };
 
     useEffect(() => {
         getStandings();
+        getLeagueInfo();
     }, []);
 
-    useEffect(() => {
-        if (data && data.length > 0) {
-            setStandings(data[0].league.standings);
-        }
-    }, [data]);
-
     return (
-        <View style={{ flex: 1, backgroundColor: '#1f1f1f' }}>
+        <Styled.Container>
             <Header title="Home" />
 
             {loading ? (
-                <View
-                    style={{
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <ActivityIndicator
-                        size="large"
-                        color={ColorPallete.SECONDARY}
-                    />
-                </View>
+                <Loading />
             ) : (
-                <View style={{ padding: 20 }}>
-                    <FlatList
-                        data={standings}
-                        renderItem={({ item }) => _renderGroups(item)}
-                        keyExtractor={(item, index) => String(index)}
-                        contentContainerStyle={{ paddingBottom: 70 }}
-                        showsVerticalScrollIndicator={false}
+                <ScrollView>
+                    <MainChampionships
+                        onItemClicked={onSelectedMainChampionship}
                     />
-                </View>
+
+                    {_renderSectionChampionshipInfo()}
+
+                    <ParticipatingTeams
+                        teamsLeague={teamsLeague}
+                        onItemPress={onNavigate}
+                    />
+                </ScrollView>
             )}
-        </View>
+        </Styled.Container>
     );
 };
 

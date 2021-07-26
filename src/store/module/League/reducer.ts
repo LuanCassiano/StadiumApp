@@ -5,6 +5,12 @@ import { IActionsLeague } from './interfaces/IActionLeague';
 
 const INITIAL_STATE: ILeagueState = {
     data: [],
+    league: {
+        id: 0,
+        logo: '',
+        name: '',
+        type: '',
+    },
     loading: false,
 };
 
@@ -19,6 +25,17 @@ export default function League(state = INITIAL_STATE, action: IActionsLeague) {
             case LeagueTypes.GET_LEAGUES_SUCCESS: {
                 draft.loading = false;
                 draft.data = action.payload;
+                break;
+            }
+
+            case LeagueTypes.GET_LEAGUE_BY_ID_REQUEST: {
+                draft.loading = true;
+                break;
+            }
+
+            case LeagueTypes.GET_LEAGUE_BY_ID_SUCCESS: {
+                draft.loading = false;
+                draft.league = action.payload;
                 break;
             }
 
