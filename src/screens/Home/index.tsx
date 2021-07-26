@@ -10,13 +10,13 @@ import ParticipatingTeams from './ParticipatingTeams';
 
 import * as Styled from './styles';
 
+import * as LeagueActions from '../../store/module/League/actions';
 import * as StandingsActions from '../../store/module/Standings/actions';
 
 import { RootState } from '../../store/module/rootReducer';
 
 import { RootNavigationProps } from '../../routes';
 
-import { ILeague } from '../../interfaces/ILeague';
 import { IChampionship } from '../../interfaces/IChampionship';
 
 const Home: React.FC = () => {
@@ -24,16 +24,13 @@ const Home: React.FC = () => {
 
     const dispatch = useDispatch();
 
-    const { data, loading, teamsLeague } = useSelector(
+    const { loading, teamsLeague } = useSelector(
         (state: RootState) => state.standings,
     );
 
-    const [leagueData, setLeagueData] = useState<ILeague>({
-        id: 0,
-        logo: '',
-        name: '',
-        type: '',
-    });
+    const { league } = useSelector((state: RootState) => state.league);
+
+    const [leagueId, setLeagueId] = useState(0);
 
     const {
         params: { idLeague, season },
@@ -48,12 +45,27 @@ const Home: React.FC = () => {
         });
     };
 
+    const getLeagueInfo = (id?: number) => {
+        if (id) {
+            dispatch(LeagueActions.getLeagueByIdRequest(id));
+            setLeagueId(id);
+            return;
+        }
+
+        dispatch(LeagueActions.getLeagueByIdRequest(idLeague));
+    };
+
     const onSelectedMainChampionship = (item: IChampionship) => {
-        dispatch(StandingsActions.getStandingsRequest(item.id, season));
+        dispatch(
+            StandingsActions.getParticipatingTeamsRequest(item.id, season),
+        );
+        getLeagueInfo(item.id);
     };
 
     const getStandings = () => {
-        dispatch(StandingsActions.getStandingsRequest(idLeague, season));
+        dispatch(
+            StandingsActions.getParticipatingTeamsRequest(idLeague, season),
+        );
     };
 
     const _renderSectionChampionshipInfo = () => {
@@ -61,19 +73,24 @@ const Home: React.FC = () => {
             <Styled.Content>
                 <Styled.Row>
                     <Styled.SectionCurrentChampionshipContent>
-                        {leagueData.logo !== '' && (
+                        {league.logo !== '' && (
                             <Styled.LogoChampionship
-                                source={{ uri: leagueData.logo }}
+                                source={{ uri: league.logo }}
                                 resizeMode="contain"
                             />
                         )}
                         <Styled.TitleChampionship>
-                            {leagueData.name}
+                            {league.name}
                         </Styled.TitleChampionship>
                     </Styled.SectionCurrentChampionshipContent>
 
                     <Styled.ButtonSeeTable
-                        onPress={(): void => navigation.navigate('standing')}
+                        onPress={(): void =>
+                            navigation.navigate('standing', {
+                                idLeague: leagueId !== 0 ? leagueId : idLeague,
+                                season,
+                            })
+                        }
                     >
                         <Styled.ButtonText>Ver tabela</Styled.ButtonText>
                     </Styled.ButtonSeeTable>
@@ -84,18 +101,8 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         getStandings();
+        getLeagueInfo();
     }, []);
-
-    useEffect(() => {
-        if (data && data.length > 0) {
-            setLeagueData({
-                id: data[0].league.id,
-                logo: data[0].league.logo,
-                name: data[0].league.name,
-                type: '',
-            });
-        }
-    }, [data]);
 
     return (
         <Styled.Container>
@@ -117,45 +124,6 @@ const Home: React.FC = () => {
                     />
                 </ScrollView>
             )}
-
-            {/* {loading ? (
-                <Loading />
-            ) : (
-                <>
-                    <View
-                        style={{
-                            marginBottom: 20,
-                            backgroundColor: '#131313',
-                            padding: 20,
-                            marginLeft: 20,
-                            borderTopLeftRadius: 20,
-                            borderBottomLeftRadius: 20,
-                        }}
-                    >
-                        <Text>Principais campeonatos</Text>
-                        <FlatList
-                            data={mainChampionships}
-                            keyExtractor={item => String(item.id)}
-                            renderItem={({ item }) =>
-                                _renderChampionships(item)
-                            }
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
-                    <Styled.Content>
-                        <FlatList
-                            data={standings}
-                            renderItem={({ item }) => (
-                                <ListGroups item={item} />
-                            )}
-                            keyExtractor={(_, index) => String(index)}
-                            contentContainerStyle={{ paddingBottom: 70 }}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </Styled.Content>
-                </>
-            )} */}
         </Styled.Container>
     );
 };

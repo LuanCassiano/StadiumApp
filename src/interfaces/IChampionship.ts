@@ -1,5 +1,3 @@
-export interface IChampionship {
-    id: number;
-    name: string;
-    logo: string;
-}
+import { League } from './League';
+
+export interface IChampionship extends League {}

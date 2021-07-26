@@ -3,7 +3,6 @@ import { ColorPallete } from '../../../global/Colors';
 import { FontFamily } from '../../../global/FontFamily';
 
 export const ListItemContainer = styled.View`
-    flex: 1;
     padding: 10px 0px;
     margin: 5px 0px;
     justify-content: space-between;

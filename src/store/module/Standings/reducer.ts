@@ -26,6 +26,17 @@ export default function Standings(
                 break;
             }
 
+            case StandingsTypes.GET_PARTICIPATING_TEAMS_REQUEST: {
+                draft.loading = true;
+                break;
+            }
+
+            case StandingsTypes.GET_PARTICIPATING_TEAMS_SUCCESS: {
+                draft.loading = false;
+                draft.data = action.payload;
+                break;
+            }
+
             case StandingsTypes.GET_TEAMS_LEAGUE_SUCESS: {
                 draft.loading = false;
                 draft.teamsLeague = action.payload;

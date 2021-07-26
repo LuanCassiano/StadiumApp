@@ -11,6 +11,7 @@ const Stack = createStackNavigator();
 
 type RootStackParamsList = {
     home: { idLeague: number; season: number };
+    standing: { idLeague: number; season: number };
 };
 
 type HomeStackParamsList = {

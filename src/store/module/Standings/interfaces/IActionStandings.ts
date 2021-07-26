@@ -20,7 +20,18 @@ export interface IActionTeamLeaguesSuccess extends Action {
     payload: ITeam[];
 }
 
+export interface IActionParticipatingTeamsRequest extends Action {
+    type: StandingsTypes.GET_PARTICIPATING_TEAMS_REQUEST;
+}
+
+export interface IActionParticipatingTeamsSuccess extends Action {
+    type: StandingsTypes.GET_PARTICIPATING_TEAMS_SUCCESS;
+    payload: ILeagueStandings[];
+}
+
 export type IActionsStandings =
     | IActionStandingsRequest
     | IActionStandingsSuccess
-    | IActionTeamLeaguesSuccess;
+    | IActionTeamLeaguesSuccess
+    | IActionParticipatingTeamsRequest
+    | IActionParticipatingTeamsSuccess;
