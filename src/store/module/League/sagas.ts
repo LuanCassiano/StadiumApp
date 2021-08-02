@@ -3,7 +3,7 @@ import { call, put, all, takeLatest } from 'redux-saga/effects';
 import { AxiosResponse } from 'axios';
 
 import { IApiResponse } from '../../../interfaces/IApiResponse';
-import { ILeague, ILeagueData } from '../../../interfaces/ILeague';
+import { ILeagueData } from '../../../interfaces/ILeague';
 
 import api from '../../../services/api';
 

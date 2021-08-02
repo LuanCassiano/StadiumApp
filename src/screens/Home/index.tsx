@@ -41,6 +41,8 @@ const Home: React.FC = () => {
             screen: 'team',
             params: {
                 idTeam,
+                idLeague: leagueId !== 0 ? leagueId : idLeague,
+                season,
             },
         });
     };
